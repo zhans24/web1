@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div id="loginForm" class="form active">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        </div>
+        <button id="loginButton">Login</button>
+        <div class="toggle">
+            Don't have an account? <a id="showSignUp">Sign Up</a>
+        </div>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signUpForm" class="form">
+        <h2>Sign Up</h2>
+        <div class="form-group">
+            <label for="signUpUsername">Username</label>
+            <input type="text" id="signUpUsername" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+            <label for="signUpEmail">Email</label>
+            <input type="email" id="signUpEmail" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label for="signUpPassword">Password</label>
+            <input type="password" id="signUpPassword" placeholder="Enter your password" required>
+        </div>
+        <button id="signUpButton">Sign Up</button>
+        <div class="toggle">
+            Already have an account? <a id="showLogin">Login</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle between Login and Sign Up forms
+    const loginForm = document.getElementById("loginForm");
+    const signUpForm = document.getElementById("signUpForm");
+    const showSignUp = document.getElementById("showSignUp");
+    const showLogin = document.getElementById("showLogin");
+
+    showSignUp.addEventListener("click", () => {
+        loginForm.classList.remove("active");
+        signUpForm.classList.add("active");
+    });
+
+    showLogin.addEventListener("click", () => {
+        signUpForm.classList.remove("active");
+        loginForm.classList.add("active");
+    });
+
+    document.getElementById("loginButton").addEventListener("click", () => {
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error("Login failed");
+                return res.text();
+            })
+            .then((message) => alert(message))
+            .catch((err) => alert(err.message));
+    });
+
+    document.getElementById("signUpButton").addEventListener("click", () => {
+        const username = document.getElementById("signUpUsername").value;
+        const email = document.getElementById("signUpEmail").value;
+        const password = document.getElementById("signUpPassword").value;
+
+        fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error("Sign Up failed");
+                return res.text();
+            })
+            .then((message) => alert(message))
+            .catch((err) => alert(err.message));
+    });
+</script>
+</body>
+</html>
